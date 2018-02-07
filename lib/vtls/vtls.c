@@ -245,7 +245,7 @@ Curl_ssl_connect(struct connectdata *conn, int sockindex)
   conn->ssl[sockindex].use = TRUE;
   conn->ssl[sockindex].state = ssl_connection_negotiating;
 
-  result = Curl_ssl->connect(conn, sockindex);
+  result = (Curl_ssl->connect)(conn, sockindex);
 
   if(!result)
     Curl_pgrsTime(conn->data, TIMER_APPCONNECT); /* SSL is connected */
@@ -554,7 +554,7 @@ void Curl_ssl_close(struct connectdata *conn, int sockindex)
 
 CURLcode Curl_ssl_shutdown(struct connectdata *conn, int sockindex)
 {
-  if(Curl_ssl->shutdown(conn, sockindex))
+  if((Curl_ssl->shutdown)(conn, sockindex))
     return CURLE_SSL_SHUTDOWN_FAILED;
 
   conn->ssl[sockindex].use = FALSE; /* get back to ordinary socket usage */
@@ -1099,7 +1099,7 @@ static CURLcode Curl_multissl_connect(struct connectdata *conn, int sockindex)
 {
   if(multissl_init(NULL))
     return CURLE_FAILED_INIT;
-  return Curl_ssl->connect(conn, sockindex);
+  return (Curl_ssl->connect)(conn, sockindex);
 }
 
 static CURLcode Curl_multissl_connect_nonblocking(struct connectdata *conn,
